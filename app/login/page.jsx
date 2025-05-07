@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import CustomButton from "@/components/CustomButton";
+import api from "@/utils/api";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,9 +21,53 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Email ===>>>  ", email);
-    console.log("Password ===>>>  ", password);
+    setIsLoading(true);
+
+    const payload = {
+      email: email,
+      password: password,
+    };
+
+    try {
+      const response = await api.post("/auth/login", payload);
+
+      console.log("response (login) ===>>> ", response);
+
+      if (response?.success) {
+        router.replace("/home");
+      } else {
+        alert("Login failed");
+      }
+    } catch (error) {
+      console.log("Error logging in: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const checkIsAuthenticated = async () => {
+    try {
+      setIsLoading(true);
+      const resp = await api.get("/auth/verify");
+
+      if (resp?.success) {
+        router.replace("/home");
+      } else {
+        router.replace("/login");
+      }
+    } catch (error) {
+      console.log("Error checking auth: ", error);
+      router.replace("/login");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkIsAuthenticated();
+  }, [router]);
+
+  if (isLoading) return <></>;
 
   return (
     <div className="flex justify-center items-center min-h-screen">
