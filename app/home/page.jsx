@@ -4,8 +4,14 @@ import React from "react";
 import StatCard from "@/components/StatCard";
 import { DollarSign, ShoppingBag, SquareActivity, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import withProtectedLayout from "@/components/layouts/withProtectedLayout";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
+  const user = useSelector((state) => state.authReducer.user);
+
+  console.log("user ===>>> ", user);
+
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <main className="max-w-7xl mx-auto py-4 px-4 lg:px-8">
@@ -25,4 +31,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default withProtectedLayout(HomePage);

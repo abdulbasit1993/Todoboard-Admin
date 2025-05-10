@@ -2,10 +2,15 @@
 
 import React, { useState } from "react";
 import { Mail, Lock, EyeOff, Eye, User } from "lucide-react";
+import api from "@/utils/api";
 import Link from "next/link";
 import CustomButton from "@/components/CustomButton";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUpPage = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -24,13 +29,43 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Username ===>>>  ", username);
-    console.log("Email ===>>>  ", email);
-    console.log("Password ===>>>  ", password);
+    setIsLoading(true);
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
+      setIsLoading(false);
       return;
+    }
+
+    const payload = {
+      username: username,
+      email: email,
+      password: password,
+      role: "ADMIN",
+    };
+
+    try {
+      const response = await api.post("/auth/signup", payload);
+
+      console.log("response (signup) ===>>> ", response);
+
+      if (response?.success) {
+        toast.success("Signup successful!");
+        router.replace("/home");
+      } else {
+        toast.error("Signup failed");
+      }
+    } catch (error) {
+      console.log("Error (signup): ", error);
+      const message = error?.response?.data?.message;
+
+      if (message) {
+        toast.error(message);
+      } else {
+        toast.error(error?.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,7 +190,7 @@ const SignUpPage = () => {
           </div>
 
           <div className="flex items-center justify-center">
-            <CustomButton title={"Submit"} type="submit" loading={false} />
+            <CustomButton title={"Submit"} type="submit" loading={isLoading} />
           </div>
         </form>
 
