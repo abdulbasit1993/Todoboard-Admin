@@ -15,14 +15,17 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slices/authSlice";
+import userReducer from "./slices/userSlice";
 
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["userReducer"],
 };
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
+  userReducer: userReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

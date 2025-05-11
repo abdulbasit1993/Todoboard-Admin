@@ -6,12 +6,7 @@
       "href": "/"
     },
     {
-      "name": "Products",
-      "icon": "ShoppingBag",
-      "href": "/products"
-    },
-    {
-      "name": "Clients",
+      "name": "Users",
       "icon": "Users",
       "href": "/users"
     },

@@ -7,9 +7,12 @@ import Link from "next/link";
 import CustomButton from "@/components/CustomButton";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/authSlice";
 
 const SignUpPage = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -50,6 +53,7 @@ const SignUpPage = () => {
       console.log("response (signup) ===>>> ", response);
 
       if (response?.success) {
+        dispatch(setUser(response?.user));
         toast.success("Signup successful!");
         router.replace("/home");
       } else {
