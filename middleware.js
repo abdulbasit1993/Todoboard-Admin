@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
-  const hasAuthCookie = request.cookies.has("token");
+  const hasAuthCookie = request.cookies.get("token");
 
   const { pathname } = request.nextUrl;
 
