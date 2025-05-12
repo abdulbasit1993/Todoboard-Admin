@@ -13,6 +13,7 @@ import { setUser } from "@/redux/slices/authSlice";
 const LoginPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -45,6 +46,7 @@ const LoginPage = () => {
           setIsLoading(false);
           return;
         } else {
+          localStorage.setItem("token", response?.token);
           dispatch(setUser(response?.user));
           toast.success("Login successful!");
           router.replace("/home");
@@ -63,6 +65,18 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.replace("/home");
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) return null;
 
   return (
     <div className="flex justify-center items-center min-h-screen">

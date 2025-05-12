@@ -12,10 +12,13 @@ import {
   ShoppingBag,
   ShoppingCart,
   Users,
+  LogOut,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import appData from "../data/appData.json";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/authSlice";
 
 const ICONS = {
   House,
@@ -27,12 +30,21 @@ const ICONS = {
   Users,
   Bell,
   Info,
+  LogOut,
 };
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [sidebarItems, setSidebarItems] = useState(appData?.sidebarItems);
   const pathname = usePathname();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    dispatch(setUser(null));
+    router.replace("/login");
+  };
 
   return (
     <div
@@ -51,6 +63,22 @@ const Sidebar = () => {
         <nav className="mt-8 flex-grow">
           {sidebarItems?.map((item) => {
             const IconComponent = ICONS[item.icon];
+
+            if (item.name === "Logout") {
+              return (
+                <button
+                  key={item?.name}
+                  onClick={handleLogout}
+                  className="w-full flex items-center cursor-pointer p-4 text-sm font-medium rounded-lg hover:bg-[#2f2f2f] transition-colors mb-2 text-left"
+                >
+                  <IconComponent size={20} style={{ minWidth: "20px" }} />
+
+                  {isSidebarOpen && (
+                    <span className="ml-4 whitespace-nowrap">{item.name}</span>
+                  )}
+                </button>
+              );
+            }
 
             return (
               <Link key={item.name} href={item.href}>

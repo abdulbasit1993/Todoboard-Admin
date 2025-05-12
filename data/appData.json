@@ -26,18 +26,8 @@
       "href": ""
     },
     {
-      "name": "Messages",
-      "icon": "Mail",
-      "href": ""
-    },
-    {
-      "name": "Notifications",
-      "icon": "Bell",
-      "href": ""
-    },
-    {
-      "name": "Support",
-      "icon": "Info",
+      "name": "Logout",
+      "icon": "LogOut",
       "href": ""
     }
   ]

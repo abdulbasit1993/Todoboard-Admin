@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Lock, EyeOff, Eye, User } from "lucide-react";
 import api from "@/utils/api";
 import Link from "next/link";
@@ -13,6 +13,7 @@ import { setUser } from "@/redux/slices/authSlice";
 const SignUpPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -53,6 +54,7 @@ const SignUpPage = () => {
       console.log("response (signup) ===>>> ", response);
 
       if (response?.success) {
+        localStorage.setItem("token", response?.token);
         dispatch(setUser(response?.user));
         toast.success("Signup successful!");
         router.replace("/home");
@@ -72,6 +74,18 @@ const SignUpPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.replace("/home");
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) return null;
 
   return (
     <div className="flex justify-center items-center min-h-screen">
