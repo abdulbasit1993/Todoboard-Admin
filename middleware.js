@@ -1,26 +1,34 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
+  const hasAuthCookie = request.cookies.has("token");
+
   const { pathname } = request.nextUrl;
 
-  const token = request.cookies.get("token")?.value;
+  if (pathname === "/") {
+    console.log("hasAuthCookie ===>>>", hasAuthCookie);
+    console.log("pathname is '/'");
+    return NextResponse.redirect(
+      new URL(hasAuthCookie ? "/home" : "/login", request.url)
+    );
+  }
 
-  const authPages = ["/login", "/signup"];
+  if (pathname.startsWith("/home") && !hasAuthCookie) {
+    console.log("hasAuthCookie ===>>>", hasAuthCookie);
+    console.log("pathname starts with '/home'");
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
-  if (authPages.includes(pathname) && token) {
+  if (pathname === "/login" && hasAuthCookie) {
+    console.log("hasAuthCookie ===>>>", hasAuthCookie);
+    console.log("pathname is '/login'");
     return NextResponse.redirect(new URL("/home", request.url));
   }
 
-  if (pathname === "/") {
-    return token
-      ? NextResponse.redirect(new URL("/home", request.url))
-      : NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  const isProtected = pathname.startsWith("/home");
-
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (pathname === "/signup" && hasAuthCookie) {
+    console.log("hasAuthCookie ===>>>", hasAuthCookie);
+    console.log("pathname is '/signup'");
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();
