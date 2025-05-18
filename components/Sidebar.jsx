@@ -19,6 +19,8 @@ import appData from "../data/appData.json";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/authSlice";
+import CustomModal from "./CustomModal";
+import LogoutModal from "./LogoutModal";
 
 const ICONS = {
   House,
@@ -38,9 +40,11 @@ const Sidebar = () => {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [sidebarItems, setSidebarItems] = useState(appData?.sidebarItems);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const pathname = usePathname();
 
   const handleLogout = () => {
+    setShowConfirmModal(false);
     localStorage.removeItem("token");
     dispatch(setUser(null));
     router.replace("/login");
@@ -68,7 +72,7 @@ const Sidebar = () => {
               return (
                 <button
                   key={item?.name}
-                  onClick={handleLogout}
+                  onClick={() => setShowConfirmModal(true)}
                   className="w-full flex items-center cursor-pointer p-4 text-sm font-medium rounded-lg hover:bg-[#2f2f2f] transition-colors mb-2 text-left"
                 >
                   <IconComponent size={20} style={{ minWidth: "20px" }} />
@@ -98,6 +102,12 @@ const Sidebar = () => {
           })}
         </nav>
       </div>
+
+      <LogoutModal
+        visible={showConfirmModal}
+        onSubmitClick={handleLogout}
+        onCancelClick={() => setShowConfirmModal(false)}
+      />
     </div>
   );
 };

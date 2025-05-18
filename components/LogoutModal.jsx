@@ -4,7 +4,7 @@ import React from "react";
 import { X } from "lucide-react";
 import ModalPortal from "./ModalPortal";
 
-const CustomModal = ({ visible, onSubmitClick, onCancelClick }) => {
+const LogoutModal = ({ visible, onSubmitClick, onCancelClick }) => {
   if (visible)
     return (
       <ModalPortal>
@@ -17,23 +17,23 @@ const CustomModal = ({ visible, onSubmitClick, onCancelClick }) => {
             className="bg-white p-4 relative"
           >
             <div className="flex flex-col gap-4 max-w-[400px]">
-              <h2 className="text-gray-800 text-xl font-bold">Welcome Back!</h2>
-              <p className="text-gray-700">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui,
-                asperiores. Blanditiis aliquam voluptatem recusandae atque
-                doloribus quae, ea deserunt eos voluptas omnis accusamus
-                incidunt laboriosam maiores fuga pariatur qui eaque.
-              </p>
+              <h2 className="text-gray-800 text-xl font-bold">
+                Confirm Logout
+              </h2>
+              <p className="text-gray-700">Are you sure you want to logout?</p>
 
               <div className="flex gap-4 mt-4">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                  Sign In
+                <button
+                  onClick={onSubmitClick}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
+                >
+                  Yes
                 </button>
                 <button
                   onClick={onCancelClick}
-                  className="bg-gray-300 text-white px-4 py-2 rounded hover:bg-gray-400"
+                  className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 cursor-pointer"
                 >
-                  Cancel
+                  No
                 </button>
               </div>
             </div>
@@ -47,4 +47,4 @@ const CustomModal = ({ visible, onSubmitClick, onCancelClick }) => {
     );
 };
 
-export default CustomModal;
+export default LogoutModal;

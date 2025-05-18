@@ -31,6 +31,7 @@ export default function RootLayout({ children }) {
             <PersistGateProvider>{children}</PersistGateProvider>
           </ReduxProvider>
         </ToastWrapper>
+        <div id="modal-root" />
       </body>
     </html>
   );
