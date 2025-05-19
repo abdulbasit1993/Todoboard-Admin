@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Edit, Search, Trash2 } from "lucide-react";
 
 const UsersTable = ({ data }) => {
-  console.log("data (UsersTable) ===>>> ", data);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredUsers = useMemo(() => {
+    return data?.filter(
+      (user) =>
+        user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, data]);
 
   return (
     <motion.div
@@ -22,6 +30,8 @@ const UsersTable = ({ data }) => {
           <input
             type="text"
             placeholder="Search Users..."
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
             className="bg-[#2f2f2f] text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2
           w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 text-sm"
           />
@@ -40,6 +50,7 @@ const UsersTable = ({ data }) => {
                 "Status",
                 "Total Todos",
                 "Created At",
+                "Actions",
               ]?.map((header) => (
                 <th
                   key={header}
@@ -53,7 +64,7 @@ const UsersTable = ({ data }) => {
           </thead>
 
           <tbody className="divide-y divide-gray-700">
-            {data?.map((user) => (
+            {filteredUsers?.map((user) => (
               <motion.tr
                 key={user?.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -71,6 +82,29 @@ const UsersTable = ({ data }) => {
                         </div>
                       </div>
                     </div>
+
+                    <div className="flex space-x-1 -mt-1 -mr-1">
+                      <button className="text-indigo-500 hover:text-indigo-300">
+                        <Edit size={16} />
+                      </button>
+                      <button className="text-red-500 hover:text-red-300">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mt-2 text-xs text-gray-300">
+                    {[
+                      "Email",
+                      "Role",
+                      "Status",
+                      "Total Todos",
+                      "Created At",
+                    ]?.map((field) => (
+                      <div key={field}>
+                        <span className="capitalize">{field}: </span>
+                      </div>
+                    ))}
                   </div>
                 </td>
 
@@ -94,7 +128,16 @@ const UsersTable = ({ data }) => {
 
                 <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                   <div className="flex items-center">
-                    <div>{user?.status}</div>
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium text-white ${
+                        user?.status === "ACTIVE"
+                          ? "bg-green-600"
+                          : "bg-red-600"
+                      }`}
+                    >
+                      {user?.status.charAt(0) +
+                        user?.status.slice(1).toLowerCase()}
+                    </span>
                   </div>
                 </td>
 
@@ -107,6 +150,18 @@ const UsersTable = ({ data }) => {
                 <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
                   <div className="flex items-center">
                     <div>{new Date(user?.createdAt).toLocaleDateString()}</div>
+                  </div>
+                </td>
+
+                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                  <div className="flex space-x-1 -ml-2">
+                    <button className="text-indigo-500 hover:text-indigo-300 mr-1 cursor-pointer">
+                      <Edit size={18} />
+                    </button>
+
+                    <button className="text-red-500 hover:text-red-300 cursor-pointer">
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </td>
               </motion.tr>
