@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   ShoppingCart,
   Users,
+  ListTodoIcon,
   LogOut,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ const ICONS = {
   ShoppingCart,
   Mail,
   Users,
+  ListTodoIcon,
   Bell,
   Info,
   LogOut,

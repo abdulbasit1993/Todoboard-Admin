@@ -11,14 +11,9 @@
       "href": "/users"
     },
     {
-      "name": "Sales",
-      "icon": "DollarSign",
-      "href": "/sales"
-    },
-    {
-      "name": "Orders",
-      "icon": "ShoppingCart",
-      "href": "/orders"
+      "name": "Todos",
+      "icon": "ListTodoIcon",
+      "href": "/todos"
     },
     {
       "name": "Settings",
