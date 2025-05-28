@@ -37,12 +37,13 @@ const TodosPage = () => {
             value={pagination?.totalTodos ? pagination?.totalTodos : 0}
           />
         </motion.div>
-        <TodosTable data={todosData?.todos} />
+        <TodosTable data={todosData?.todos} loading={isLoading} />
         <Pagination
           totalItems={pagination?.totalTodos}
           itemsPerPage={limit}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
+          loading={isLoading}
         />
       </main>
     </div>

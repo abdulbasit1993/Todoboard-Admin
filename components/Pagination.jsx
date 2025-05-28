@@ -5,6 +5,7 @@ const Pagination = ({
   itemsPerPage,
   currentPage,
   setCurrentPage,
+  loading,
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -30,10 +31,12 @@ const Pagination = ({
     <div className="flex justify-center items-center space-x-2 mt-4">
       <button
         className={`px-4 py-2 rounded ${
-          currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"
+          currentPage === 1 || loading
+            ? "bg-gray-300"
+            : "bg-blue-500 text-white"
         }`}
         onClick={handlePreviousClick}
-        disabled={currentPage === 1}
+        disabled={currentPage === 1 || loading}
       >
         Previous
       </button>
@@ -44,16 +47,19 @@ const Pagination = ({
             currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
           onClick={() => setCurrentPage(page)}
+          disabled={loading}
         >
           {page}
         </button>
       ))}
       <button
         className={`px-4 py-2 rounded ${
-          currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 text-white"
+          currentPage === totalPages || loading
+            ? "bg-gray-300"
+            : "bg-blue-500 text-white"
         }`}
         onClick={handleNextClick}
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || loading}
       >
         Next
       </button>

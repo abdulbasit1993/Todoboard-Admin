@@ -2,10 +2,10 @@ import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
 import Pagination from "./Pagination";
+import { truncate } from "@/utils/helpers";
 
-const TodosTable = ({ data }) => {
+const TodosTable = ({ data, loading }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
 
   console.log("data (todosTable) ===>>> ", data);
 
@@ -68,104 +68,119 @@ const TodosTable = ({ data }) => {
           </thead>
 
           <tbody className="divide-y divide-gray-700">
-            {filteredTodos?.map((todo) => (
-              <motion.tr
-                key={todo?._id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.3 }}
-                className="flex flex-col md:table-row mb-4 md:mb-0 border-b md:border-b-0
+            {loading ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="text-center py-6 text-gray-300 text-sm"
+                >
+                  Loading...
+                </td>
+              </tr>
+            ) : (
+              filteredTodos?.map((todo) => (
+                <motion.tr
+                  key={todo?._id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  className="flex flex-col md:table-row mb-4 md:mb-0 border-b md:border-b-0
               border-gray-700 md:border-none p-2 md:p-0"
-              >
-                <td className="md:hidden px-3 py-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-100">
-                          {todo?.title}
+                >
+                  <td className="md:hidden px-3 py-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="ml-3">
+                          <div className="text-sm font-medium text-gray-100">
+                            {todo?.title}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex space-x-1 -mt-1 -mr-1">
-                      <button className="text-indigo-500 hover:text-indigo-300">
-                        <Edit size={16} />
-                      </button>
-                      <button className="text-red-500 hover:text-red-300">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-2 text-xs text-gray-300">
-                    {[
-                      "Title",
-                      "Description",
-                      "Created By",
-                      "Status",
-                      "Created At",
-                      "Updated At",
-                      "Actions",
-                    ]?.map((field) => (
-                      <div key={field}>
-                        <span className="capitalize">{field}: </span>
+                      <div className="flex space-x-1 -mt-1 -mr-1">
+                        <button className="text-indigo-500 hover:text-indigo-300">
+                          <Edit size={16} />
+                        </button>
+                        <button className="text-red-500 hover:text-red-300">
+                          <Trash2 size={16} />
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                </td>
-
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>{todo?.title}</div>
-                  </div>
-                </td>
-
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>{todo?.description}</div>
-                  </div>
-                </td>
-
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>{todo?.user?.username}</div>
-                  </div>
-                </td>
-
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>
-                      {todo?.status.charAt(0).toUpperCase() +
-                        todo?.status.slice(1)}
                     </div>
-                  </div>
-                </td>
 
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>{new Date(todo?.createdAt).toLocaleDateString()}</div>
-                  </div>
-                </td>
+                    <div className="mt-2 text-xs text-gray-300">
+                      {[
+                        "Title",
+                        "Description",
+                        "Created By",
+                        "Status",
+                        "Created At",
+                        "Updated At",
+                        "Actions",
+                      ]?.map((field) => (
+                        <div key={field}>
+                          <span className="capitalize">{field}: </span>
+                        </div>
+                      ))}
+                    </div>
+                  </td>
 
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex items-center">
-                    <div>{new Date(todo?.updatedAt).toLocaleDateString()}</div>
-                  </div>
-                </td>
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>{todo?.title}</div>
+                    </div>
+                  </td>
 
-                <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
-                  <div className="flex space-x-1 -ml-2">
-                    <button className="text-indigo-500 hover:text-indigo-300 mr-1 cursor-pointer">
-                      <Edit size={18} />
-                    </button>
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>{truncate(todo?.description)}</div>
+                    </div>
+                  </td>
 
-                    <button className="text-red-500 hover:text-red-300 cursor-pointer">
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </motion.tr>
-            ))}
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>{todo?.user?.username}</div>
+                    </div>
+                  </td>
+
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>
+                        {todo?.status.charAt(0).toUpperCase() +
+                          todo?.status.slice(1)}
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>
+                        {new Date(todo?.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex items-center">
+                      <div>
+                        {new Date(todo?.updatedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">
+                    <div className="flex space-x-1 -ml-2">
+                      <button className="text-indigo-500 hover:text-indigo-300 mr-1 cursor-pointer">
+                        <Edit size={18} />
+                      </button>
+
+                      <button className="text-red-500 hover:text-red-300 cursor-pointer">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
