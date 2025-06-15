@@ -9,9 +9,9 @@ const initialState = {
 
 export const fetchTodos = createAsyncThunk(
   "todo/fetchTodos",
-  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, userId, status = 'pending' }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/todos?page=${page}&limit=${limit}`);
+      const response = await api.get(userId ? `/todos?page=${page}&limit=${limit}&userId=${userId}` : status ? `/todos?page=${page}&limit=${limit}&status=${status}` : `/todos?page=${page}&limit=${limit}`);
 
       if (response?.success) {
         return response;

@@ -1,13 +1,18 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
 import Pagination from "./Pagination";
 import { truncate } from "@/utils/helpers";
+import { useDispatch, useSelector } from "react-redux";
 
-const TodosTable = ({ data, loading }) => {
+const TodosTable = ({ data, loading, selectedUser, setSelectedUser, selectedStatus, setSelectedStatus}) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState([]);
+  const userData = useSelector((state) => state.userReducer.users);
 
   console.log("data (todosTable) ===>>> ", data);
+  console.log("userData (todosTable) ===>>> ", userData);
+
 
   const filteredTodos = useMemo(() => {
     return data?.filter(
@@ -16,6 +21,7 @@ const TodosTable = ({ data, loading }) => {
         todo?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, data]);
+
 
   return (
     <motion.div
@@ -41,6 +47,46 @@ const TodosTable = ({ data, loading }) => {
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
         </div>
+      </div>
+
+   
+
+      <div className="flex flex-col md:flex-row items-center justify-start mb-4 gap-4">
+
+        <h6 className="font-semibold text-gray-100 text-center md:text-left mr-2">
+          Filters:
+        </h6>
+
+        <select
+        value={selectedStatus}
+        onChange={(e) => setSelectedStatus(e.target.value)}
+        className="bg-[#2f2f2f] text-white text-sm rounded-lg px-4 py-2"
+        >
+          <option value="">Status</option>
+              <option key={"pending"} value={"pending"}>
+                Pending
+              </option>
+
+              <option key={"completed"} value={"completed"}>
+                Completed
+              </option>
+           
+        </select>
+
+         <select
+        value={selectedUser}
+        onChange={(e) => setSelectedUser(e.target.value)}
+        className="bg-[#2f2f2f] text-white text-sm rounded-lg px-4 py-2"
+        >
+          <option value="">All Users</option>
+          {userData?.map((user) => {
+            return (
+              <option key={user?.id} value={user?.id}>
+                {user?.name}
+              </option>
+            )
+          })}
+        </select>
       </div>
 
       <div className="overflow-x-auto">

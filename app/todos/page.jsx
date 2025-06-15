@@ -9,18 +9,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "@/redux/slices/todoSlice";
 import TodosTable from "@/components/TodosTable";
 import Pagination from "@/components/Pagination";
+import { fetchUsers } from "@/redux/slices/userSlice";
 
 const TodosPage = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const isLoading = useSelector((state) => state.todoReducer.isLoading);
   const pagination = useSelector((state) => state.todoReducer.todos.pagination);
   const todosData = useSelector((state) => state.todoReducer.todos);
 
+  console.log('selectedUser ==========>> ', selectedUser)
+ 
   useEffect(() => {
-    dispatch(fetchTodos({ page: currentPage, limit: limit }));
-  }, [currentPage]);
+    if (selectedUser) {
+    dispatch(fetchTodos({ page: currentPage, limit: limit, userId: selectedUser }));
+    } else if (selectedStatus) {
+      dispatch(fetchTodos({ page: currentPage, limit: limit, status: selectedStatus }));
+    } else {
+      dispatch(fetchTodos({ page: currentPage, limit: limit }));
+    }
+  }, [currentPage, selectedUser, selectedStatus]);
+
+  useEffect(() => {
+   dispatch(fetchUsers());
+  }, [])
+  
 
   return (
     <div className="flex-1 overflow-auto relative z-10">
@@ -37,7 +53,7 @@ const TodosPage = () => {
             value={pagination?.totalTodos ? pagination?.totalTodos : 0}
           />
         </motion.div>
-        <TodosTable data={todosData?.todos} loading={isLoading} />
+        <TodosTable data={todosData?.todos} loading={isLoading} selectedUser={selectedUser} setSelectedUser={setSelectedUser} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
         <Pagination
           totalItems={pagination?.totalTodos}
           itemsPerPage={limit}
