@@ -4,4 +4,4 @@ const base_urls_list = {
 };
 
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || base_urls_list.dev;
+  process.env.NEXT_PUBLIC_BASE_URL || base_urls_list.production;
