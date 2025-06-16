@@ -22,15 +22,18 @@ const TodosPage = () => {
   const todosData = useSelector((state) => state.todoReducer.todos);
 
   console.log('selectedUser ==========>> ', selectedUser)
+  console.log('selectedStatus ==========>> ', selectedStatus)
  
   useEffect(() => {
-    if (selectedUser) {
-    dispatch(fetchTodos({ page: currentPage, limit: limit, userId: selectedUser }));
-    } else if (selectedStatus) {
-      dispatch(fetchTodos({ page: currentPage, limit: limit, status: selectedStatus }));
-    } else {
-      dispatch(fetchTodos({ page: currentPage, limit: limit }));
+    const params = {
+      page: currentPage,
+      limit
     }
+
+    if (selectedUser) params.userId = selectedUser;
+    if (selectedStatus) params.status = selectedStatus;
+
+    dispatch(fetchTodos(params));
   }, [currentPage, selectedUser, selectedStatus]);
 
   useEffect(() => {
